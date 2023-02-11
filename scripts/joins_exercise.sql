@@ -48,7 +48,7 @@ FROM distributors;
 -- 5. Write a query that returns the five distributors with the highest average movie budget.
 SELECT company_name, AVG(film_budget) AS avg_film_budget
 FROM specs
-	FULL JOIN distributors
+	INNER JOIN distributors
 	ON domestic_distributor_id = distributor_id
 	INNER JOIN revenue
 	ON specs.movie_id = revenue.movie_id
@@ -73,10 +73,20 @@ FROM distributors;
 --2 films. "Dirty Dancing" has the highest imdb rating of these two films at 7.0. 
 
 -- 7. Which have a higher average rating, movies which are over two hours long or movies which are under two hours?
-SELECT length_in_min, AVG(imdb_rating)
+SELECT AVG(imdb_rating)
 FROM specs
 	INNER JOIN rating
 	ON specs.movie_id = rating.movie_id
-WHERE length_in_min < 120
-OR length_in_min >120
-GROUP BY length_in_min;
+WHERE length_in_min > 120
+UNION
+SELECT AVG(imdb_rating)
+FROM specs
+	INNER JOIN rating
+	ON specs.movie_id = rating.movie_id
+WHERE length_in_min < 120;
+
+--Movies longer than 2 hours have a higher rating at 7.26 compared to 6.92 for less than 2 hours. 
+
+
+
+
