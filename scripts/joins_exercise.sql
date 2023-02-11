@@ -5,7 +5,6 @@ SELECT film_title, release_year, worldwide_gross AS min_gross
 FROM specs
 	INNER JOIN revenue
 	ON specs.movie_id = revenue.movie_id
-GROUP BY film_title, release_year, worldwide_gross
 ORDER BY worldwide_gross ASC
 LIMIT 1;
 
@@ -30,7 +29,6 @@ FROM specs
 	INNER JOIN revenue
 	ON specs.movie_id = revenue.movie_id
 WHERE mpaa_rating = 'G'
-GROUP BY company_name, film_title, mpaa_rating, worldwide_gross
 ORDER BY worldwide_gross DESC
 LIMIT 1;
 
@@ -48,26 +46,37 @@ SELECT COUNT(*)
 FROM distributors;
 
 -- 5. Write a query that returns the five distributors with the highest average movie budget.
-SELECT specs.movie_id, company_name, AVG(film_budget) AS avg_film_budget
+SELECT company_name, AVG(film_budget) AS avg_film_budget
 FROM specs
 	FULL JOIN distributors
 	ON domestic_distributor_id = distributor_id
 	INNER JOIN revenue
 	ON specs.movie_id = revenue.movie_id
-GROUP BY company_name, specs.movie_id
+GROUP BY company_name
 ORDER BY AVG(film_budget) DESC
 LIMIT 5;
 
-SELECT DISTINCT(company_name), specs.movie_id, AVG(film_budget)
-FROM distributors
-	INNER JOIN specs
-	ON distributor_id = domestic_distributor_id
-	INNER JOIN revenue
-	ON specs.movie_id = revenue.movie_id
-GROUP BY DISTINCT(company_name), specs.movie_id
-ORDER BY AVG(film_budget) DESC
-LIMIT 5;
 
 -- 6. How many movies in the dataset are distributed by a company which is not headquartered in California? Which of these movies has the highest imdb rating?
+SELECT company_name, headquarters, film_title, imdb_rating
+FROM distributors
+	LEFT JOIN specs
+	ON distributor_id = domestic_distributor_id
+	INNER JOIN rating
+	ON specs.movie_id = rating.movie_id
+WHERE headquarters NOT LIKE '%, CA'
+ORDER BY imdb_rating DESC;
+
+SELECT *
+FROM distributors;
+
+--2 films. "Dirty Dancing" has the highest imdb rating of these two films at 7.0. 
 
 -- 7. Which have a higher average rating, movies which are over two hours long or movies which are under two hours?
+SELECT length_in_min, AVG(imdb_rating)
+FROM specs
+	INNER JOIN rating
+	ON specs.movie_id = rating.movie_id
+WHERE length_in_min < 120
+OR length_in_min >120
+GROUP BY length_in_min;
