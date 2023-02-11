@@ -37,6 +37,15 @@ LIMIT 1;
 --"Toy Story 4" is the highest grossing G rated film at 1,073,394,593. Released by Walt Disney.
 
 -- 4. Write a query that returns, for each distributor in the distributors table, the distributor name and the number of movies associated with that distributor in the movies table. Your result set should include all of the distributors, whether or not they have any movies in the movies table.
+SELECT company_name, COUNT(film_title) AS num_of_films
+FROM distributors
+	LEFT JOIN specs
+	ON distributor_id = domestic_distributor_id
+GROUP BY company_name
+ORDER BY COUNT(film_title);
+
+SELECT COUNT(*)
+FROM distributors;
 
 -- 5. Write a query that returns the five distributors with the highest average movie budget.
 
