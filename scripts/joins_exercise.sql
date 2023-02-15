@@ -73,13 +73,13 @@ FROM distributors;
 --2 films. "Dirty Dancing" has the highest imdb rating of these two films at 7.0. 
 
 -- 7. Which have a higher average rating, movies which are over two hours long or movies which are under two hours?
-SELECT AVG(imdb_rating)
+SELECT ROUND(AVG(imdb_rating), 2)
 FROM specs
 	INNER JOIN rating
 	ON specs.movie_id = rating.movie_id
 WHERE length_in_min > 120
 UNION
-SELECT AVG(imdb_rating)
+SELECT ROUND(AVG(imdb_rating), 2)
 FROM specs
 	INNER JOIN rating
 	ON specs.movie_id = rating.movie_id
