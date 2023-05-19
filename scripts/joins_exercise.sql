@@ -5,7 +5,7 @@ SELECT film_title, release_year, worldwide_gross AS min_gross
 FROM specs
 	INNER JOIN revenue
 	ON specs.movie_id = revenue.movie_id
-ORDER BY worldwide_gross ASC
+ORDER BY worldwide_gross 
 LIMIT 1;
 
 --Lowest grossing movie worldwide is "Semi-Tough" released in 1977 with a gross of 37,187,139
@@ -25,7 +25,7 @@ LIMIT 1;
 SELECT film_title, mpaa_rating, company_name, worldwide_gross AS max_gross
 FROM specs
 	INNER JOIN distributors
-	ON specs.domestic_distributor_id = 		distributors.distributor_id
+	ON specs.domestic_distributor_id = distributors.distributor_id
 	INNER JOIN revenue
 	ON specs.movie_id = revenue.movie_id
 WHERE mpaa_rating = 'G'
@@ -42,8 +42,6 @@ FROM distributors
 GROUP BY company_name
 ORDER BY COUNT(film_title);
 
-SELECT COUNT(*)
-FROM distributors;
 
 -- 5. Write a query that returns the five distributors with the highest average movie budget.
 SELECT company_name, AVG(film_budget) AS avg_film_budget
@@ -67,24 +65,32 @@ FROM distributors
 WHERE headquarters NOT LIKE '%, CA'
 ORDER BY imdb_rating DESC;
 
-SELECT *
-FROM distributors;
-
 --2 films. "Dirty Dancing" has the highest imdb rating of these two films at 7.0. 
 
 -- 7. Which have a higher average rating, movies which are over two hours long or movies which are under two hours?
-SELECT ROUND(AVG(imdb_rating), 2)
+SELECT ROUND(AVG(imdb_rating), 2),
+'greater' AS greater_or_less_than
 FROM specs
 	INNER JOIN rating
 	ON specs.movie_id = rating.movie_id
 WHERE length_in_min > 120
 UNION
-SELECT ROUND(AVG(imdb_rating), 2)
+SELECT ROUND(AVG(imdb_rating), 2),
+'less' AS greater_than_or_less_than
 FROM specs
 	INNER JOIN rating
 	ON specs.movie_id = rating.movie_id
 WHERE length_in_min < 120;
 
+SELECT
+CASE WHEN length_in_min > 120 THEN 'over 2 hours'
+ELSE 'under 2 hours' END AS movie_length,
+ROUND(AVG(imdb_rating), 2) AS avg_rating
+FROM specs
+	INNER JOIN rating
+	USING(movie_id)
+GROUP BY movie_length;
+	
 --Movies longer than 2 hours have a higher rating at 7.26 compared to 6.92 for less than 2 hours. 
 
 
